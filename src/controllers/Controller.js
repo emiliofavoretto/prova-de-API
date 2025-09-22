@@ -69,7 +69,7 @@ const createCar = (req, res) => {
         });
     }
 
-    // Regras de negócio
+    // Regras de negócio exemplo para a prova
     if (ano < 1886) {  // Primeiro carro do mundo foi inventado em 1886
         return res.status(400).json({
             success: false,
@@ -84,7 +84,7 @@ const createCar = (req, res) => {
         });
     }
 
-    // como criar um novo0 carro 
+    // como criar um novo carro exemplo para a prova 
     const novoCar = {
         id: cars.length + 1,
         nome,
