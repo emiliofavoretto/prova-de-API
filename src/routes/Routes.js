@@ -1,11 +1,12 @@
 import express from "express";
-import { updateMonster, getAllMonsters, getMonsterByld, createMonster, deleteMonster } from "../Controllers/Controller.js";
+import { updateCar, getAllCars, getCarById, createCar, deleteCar } from "../controllers/Controller.js";
 
 const router = express.Router();
-router.get("/", getAllMonsters);
-router.get("/:id", getMonsterByld);
-router.post("/", createMonster);
-router.delete("/:id", deleteMonster);
-router.put("/:id", updateMonster);
+
+router.get("/", getAllCars);
+router.get("/:id", getCarById);
+router.post("/", createCar);
+router.delete("/:id", deleteCar);
+router.put("/:id", updateCar);
 
 export default router;

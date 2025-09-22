@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 
-import monstersRoutes from "./src/routes/Routes.js"
+import carsRoutes from "./src/routes/Routes.js";
 
 const app = express();
 app.use(express.json());
@@ -13,8 +13,8 @@ app.get("/", (req, res) => {
     res.send("Servidor funcionando...");
 });
 
-app.use("/monsters", monstersRoutes)
+app.use("/cars", carsRoutes);
 
 app.listen(serverPort, () => {
-    console.log("Servidor funcionando.");
+    console.log(`Servidor funcionando na porta http://localhost:${serverPort}.`);
 });

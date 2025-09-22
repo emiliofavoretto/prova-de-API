@@ -1,39 +1,38 @@
 import dados from "../models/dados.js";
-const { monsters } = dados;
+const { cars } = dados;
 
-const getAllMonsters = (req, res) => {
-    let resultado = monsters;
+const getAllCars = (req, res) => {
+    let resultado = cars;
 
-    // FILTROS AQUI
+    // FILTROS AQUI (se quiser implementar)
 
-    
     res.status(200).json({
         total: resultado.length,
         data: resultado
     });
 }
 
-const getMonsterByld = (req, res) => {
+const getCarById = (req, res) => {
     const id = parseInt(req.params.id);
-    const monster = monsters.find(m => m.id === id);
+    const car = cars.find(c => c.id === id);
 
-    if (!monster) {
-        res.status(404).json({
+    if (!car) {
+        return res.status(404).json({
             success: false,
-            message: `Monster not found, ${id}`
-        })
+            message: `Carro não encontrado, id: ${id}`
+        });
     }
 
     res.status(200).json({
-        total: monster.length,
-        data: monster
-    })
+        total: 1,
+        data: car
+    });
 }
 
-const createMonster = (req, res) => {
-    const { nome, idade, tipo, cor, serie, habilidade, foto } = req.body;
+const createCar = (req, res) => {
+    const { nome, ano, tipo, cor, modelo } = req.body;
 
-    const tiposMonsterHigh = ["Vampiro", "Lobisomem", "Frankenstein", "Zumbi", "Múmia", "Fantasma", "Sereia", "Medusa", "Ciborgue", "Dragão", "Demônio", "Bruxa", "Híbrido"];
+    const tiposCarros = ["Esportivo", "Sedan", "Pickup", "Sedan Elétrico", "SUV", "Hatchback"];
 
     if (!nome) {
         return res.status(400).json({
@@ -42,10 +41,10 @@ const createMonster = (req, res) => {
         });
     }
 
-    if (!idade) {
+    if (!ano) {
         return res.status(400).json({
             success: false,
-            message: "O campo 'idade' é obrigatório"
+            message: "O campo 'ano' é obrigatório"
         });
     }
 
@@ -63,62 +62,49 @@ const createMonster = (req, res) => {
         });
     }
 
-    if (!serie) {
+    if (!modelo) {
         return res.status(400).json({
             success: false,
-            message: "O campo 'serie' é obrigatório"
+            message: "O campo 'modelo' é obrigatório"
         });
     }
 
-    if (!habilidade) {
+    // Regras de negócio
+    if (ano < 1886) {  // Primeiro carro do mundo foi inventado em 1886
         return res.status(400).json({
             success: false,
-            message: "O campo 'habilidade' é obrigatório"
+            message: "O ano deve ser maior ou igual a 1886"
         });
     }
 
-
-    //Regras de negocio
-    if (idade < 1600) {
+    if (!tiposCarros.includes(tipo)) {
         return res.status(400).json({
             success: false,
-            message: "A idade deve ser superior ou igual 1600"
-        })
-    }
-
-    if (!tiposMonsterHigh.includes(tipo)) {
-        return res.status(400).json({
-            success: false,
-            message: `O tipo "${tipo}" não é válido. Tipos permitidos: ${tiposMonsterHigh.join(", ")}.`
+            message: `O tipo "${tipo}" não é válido. Tipos permitidos: ${tiposCarros.join(", ")}.`
         });
     }
 
-    //Criar a monster high
-
-    const novaMonster = {
-        id: monsters.length + 1,
-        nome: nome,
-        idade,
+    // como criar um novo0 carro 
+    const novoCar = {
+        id: cars.length + 1,
+        nome,
+        ano,
         tipo,
         cor,
-        serie,
-        dataDeCadastro: new Date(),
-        habilidade,
-        foto
-    }
+        modelo
+    };
 
-    monsters.push(novaMonster);
+    cars.push(novoCar);
 
     res.status(201).json({
         success: true,
-        message: "Nova Monstro Cadastrada com sucesso",
-        data: novaMonster
-    })
-
+        message: "Novo carro cadastrado com sucesso",
+        data: novoCar
+    });
 }
 
-const deleteMonster = (req, res) => {
-    const { id } = req.params
+const deleteCar = (req, res) => {
+    const { id } = req.params;
 
     if (isNaN(id)) {
         return res.status(400).json({
@@ -129,32 +115,30 @@ const deleteMonster = (req, res) => {
 
     const idParaApagar = parseInt(id);
 
-    const monsterParaRemover = monsters.find(m => m.id === idParaApagar);
-    console.log(monsterParaRemover)
+    const carParaRemover = cars.find(c => c.id === idParaApagar);
 
-    if (!monsterParaRemover) {
+    if (!carParaRemover) {
         return res.status(404).json({
             success: false,
-            message: "Monster id não existe"
+            message: "Carro com esse id não existe"
         });
     }
 
-    const monsterFiltrado = monsters.filter(m => m.id !== id);
-    console.log(monsterFiltrado)
+    const carrosFiltrados = cars.filter(c => c.id !== idParaApagar);
 
-    monsters.splice(0, monsters.length, ...monsterFiltrado);
+    cars.splice(0, cars.length, ...carrosFiltrados);
 
     return res.status(200).json({
         success: true,
-        message: "O monster foi removida com sucesso!"
-    })
+        message: "O carro foi removido com sucesso!"
+    });
 }
 
-const updateMonster = (req, res) => {
+const updateCar = (req, res) => {
     const id = parseInt(req.params.id);
-    const { nome, idade, tipo, cor, serie, habilidade, foto } = req.body;
+    const { nome, ano, tipo, cor, modelo } = req.body;
 
-    const tiposMonsterHigh = ["Vampiro", "Lobisomem", "Frankenstein", "Zumbi", "Múmia", "Fantasma", "Sereia", "Medusa", "Ciborgue", "Dragão", "Demônio", "Bruxa", "Híbrido"];
+    const tiposCarros = ["Esportivo", "Sedan", "Pickup", "Sedan Elétrico", "SUV", "Hatchback"];
 
     if (isNaN(id)) {
         return res.status(400).json({
@@ -163,59 +147,54 @@ const updateMonster = (req, res) => {
         });
     }
 
-    const monstroExiste = monsters.find(m => m.id === id);
+    const carExiste = cars.find(c => c.id === id);
 
-    if (!monstroExiste) {
+    if (!carExiste) {
         return res.status(404).json({
             success: false,
-            message: "Monster não existe"
+            message: "Carro não existe"
         });
     }
 
-    //Regras de negocio
-    if (idade < 1600) {
+    // Regras de negócio
+    if (ano && ano < 1886) {
         return res.status(400).json({
             success: false,
-            message: "A idade deve ser superior ou igual 1600"
-        })
+            message: "O ano deve ser maior ou igual a 1886"
+        });
     }
 
-    // O tipo esta vindo indefinido, logo este tipo nao esta no array de tipos, entao ele trava.
-
     if (tipo) {
-        if (!tiposMonsterHigh.includes(tipo)) {
+        if (!tiposCarros.includes(tipo)) {
             return res.status(400).json({
                 success: false,
-                message: `O tipo "${tipo}" não é válido. Tipos permitidos: ${tiposMonsterHigh.join(", ")}.`
+                message: `O tipo "${tipo}" não é válido. Tipos permitidos: ${tiposCarros.join(", ")}.`
             });
         }
     }
 
-
-    const monsterAtualizados = monsters.map(monster =>
-        monster.id === id
+    const carrosAtualizados = cars.map(car =>
+        car.id === id
             ? {
-                ...monster,
+                ...car,
                 ...(nome && { nome }),
-                ...(idade && { idade }),
+                ...(ano && { ano }),
                 ...(tipo && { tipo }),
                 ...(cor && { cor }),
-                ...(serie && { serie }),
-                ...(habilidade && { habilidade })
+                ...(modelo && { modelo })
             }
-            : monster
+            : car
     );
 
-    monsters.splice(0, monsters.length, ...monsterAtualizados);
+    cars.splice(0, cars.length, ...carrosAtualizados);
 
-    const monstroAtualizado = monsters.find(m => m.id === id);
+    const carroAtualizado = cars.find(c => c.id === id);
 
     res.status(200).json({
         success: true,
-        message: "Monstro atualizado com sucesso",
-        monstro: monstroAtualizado
-    })
-
+        message: "Carro atualizado com sucesso",
+        data: carroAtualizado
+    });
 }
 
-export { getAllMonsters, getMonsterByld, createMonster, deleteMonster, updateMonster };
+export { getAllCars, getCarById, createCar, deleteCar, updateCar };
